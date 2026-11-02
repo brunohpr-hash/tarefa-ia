@@ -1,0 +1,4 @@
+sync_config.json
+venv/
+__pycache__/
+servidor/estado.json
