@@ -1,4 +1,4 @@
 {
-  "version": "1.0.0",
-  "changelog": "Primeira versão do Tarefa IA: fale suas tarefas (Ctrl+Shift+T) ou digite — a IA separa em tarefas com prazo e prioridade, você confirma antes de salvar. Lista Hoje/Em Breve/Todas/Concluídas, notificações do Windows e lembretes no canal Telegram 'Tarefa IA' (via servidor do Bob, funciona com o PC desligado), com resumo matinal às 7h45."
+  "version": "1.0.1",
+  "changelog": "Correção definitiva do Ctrl+Shift+T morto após bloqueio de tela/suspensão: o app agora escuta os eventos oficiais do Windows (desbloqueio de sessão e retomada de suspensão) e se reinicia sozinho — mesmo escudo validado no Ditado IA. Watchdog reserva incluído."
 }
