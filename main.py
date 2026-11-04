@@ -32,7 +32,7 @@ import requests
 from PIL import Image, ImageDraw
 
 APP_NAME = "Tarefa IA"
-APP_VERSION = "1.0.1"
+APP_VERSION = "1.0.2"
 UPDATE_REPO = "brunohpr-hash/tarefa-ia"
 UPDATE_RAW = f"https://raw.githubusercontent.com/{UPDATE_REPO}/main"
 APP_DIR = Path(os.environ.get("APPDATA", str(Path.home()))) / "TarefaIA"
@@ -439,6 +439,7 @@ class TarefaApp:
         self.tarefas = load_tasks()
         self.busy = False
         self._recovering = False
+        self._last_key_evt = 0.0  # pulso da escuta global (prova de vida)
         self.gravando = False
         self.recorder = Recorder()
         self.icon = None
@@ -867,6 +868,16 @@ class TarefaApp:
             keyboard.unhook_all_hotkeys()
         except Exception:
             pass
+        # sentinela de vida: escuta TODO evento de tecla para marcar o pulso
+        try:
+            if getattr(self, "_pulse_hook", None) is not None:
+                try:
+                    keyboard.unhook(self._pulse_hook)
+                except Exception:
+                    pass
+            self._pulse_hook = keyboard.on_press(self._pulse)
+        except Exception:
+            self._pulse_hook = None
         keyboard.add_hotkey(self.cfg["hotkey"], self.on_hotkey, suppress=False)
 
 
@@ -986,16 +997,45 @@ class TarefaApp:
                                  args=("suspensao (reserva)",),
                                  daemon=True).start()
 
+    def _pulse(self, _evt=None):
+        # chamado em QUALQUER evento de teclado — batimento cardíaco da escuta
+        self._last_key_evt = time.monotonic()
+
     def _rehook_patrol(self):
+        """Ronda com prova de vida: religa o atalho a cada 2 min e TESTA a
+        escuta injetando tecla fantasma (F24). Religar nao basta se o motor
+        de escuta morreu (caso de campo Ditado 04/11/2026) — 2 falhas
+        seguidas confirmam gancho morto e o app se reinicia sozinho."""
+        falhas = 0
         while True:
             time.sleep(120)
             try:
-                if self.gravando or self.busy:
+                if self.gravando or self.busy or self._recovering:
                     continue
                 self.register_hotkey()
-                log("ronda: atalho religado preventivamente")
+                t0 = time.monotonic()
+                try:
+                    keyboard.press_and_release("f24")
+                except Exception:
+                    pass
+                time.sleep(1.0)
+                if self._last_key_evt >= t0:
+                    falhas = 0
+                    log("ronda: atalho religado e escuta VERIFICADA viva")
+                else:
+                    falhas += 1
+                    log(f"ronda: escuta NAO respondeu ao teste ({falhas}x)")
+                    if falhas >= 2:
+                        log("ronda: gancho morto confirmado — reiniciando o app")
+                        falhas = 0
+                        try:
+                            self.notify("Escuta do teclado travou — reiniciando sozinho…")
+                        except Exception:
+                            pass
+                        restart_app(self.icon)
+                        return
             except Exception as e:
-                log(f"ronda: {e}")
+                log(f"ronda: falha ao religar ({e})")
 
     # ---------- update
     def do_update_check(self, silent=False):

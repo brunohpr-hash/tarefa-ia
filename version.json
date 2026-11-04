@@ -1,4 +1,4 @@
 {
-  "version": "1.0.1",
-  "changelog": "Correção definitiva do Ctrl+Shift+T morto após bloqueio de tela/suspensão: o app agora escuta os eventos oficiais do Windows (desbloqueio de sessão e retomada de suspensão) e se reinicia sozinho — mesmo escudo validado no Ditado IA. Watchdog reserva incluído."
+  "version": "1.0.2",
+  "changelog": "Ronda com prova de vida (tecla fantasma F24 + reinício automático se a escuta do teclado morrer) — mesma correção do Ditado v1.5.5. Nunca mais Ctrl+Shift+T mudo."
 }
