@@ -1,4 +1,4 @@
 {
-  "version": "1.0.4",
-  "changelog": "Blindagem anti-disparo-fantasma: os atalhos ficam surdos durante o teste de vida da ronda e a memoria de teclas presas e limpa a cada ciclo."
+  "version": "1.0.5",
+  "changelog": "Correção de tarefas 'ressuscitando' no painel: o lembrete do Windows não altera mais a data de modificação da tarefa — antes, uma cópia antiga ainda aberta podia vencer a conclusão feita no outro PC/Telegram durante a sincronização e a tarefa concluída voltava a aparecer como pendente."
 }

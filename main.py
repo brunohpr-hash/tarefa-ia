@@ -32,7 +32,7 @@ import requests
 from PIL import Image, ImageDraw
 
 APP_NAME = "Tarefa IA"
-APP_VERSION = "1.0.4"
+APP_VERSION = "1.0.5"
 UPDATE_REPO = "brunohpr-hash/tarefa-ia"
 UPDATE_RAW = f"https://raw.githubusercontent.com/{UPDATE_REPO}/main"
 APP_DIR = Path(os.environ.get("APPDATA", str(Path.home()))) / "TarefaIA"
@@ -634,7 +634,12 @@ class TarefaApp:
                                             f"{t['titulo']} ({prazo_humano(t['prazo'])})")
                                 beep(1200, 250)
                                 t["notificada_local"] = True
-                                t["atualizado_em"] = datetime.now().isoformat(timespec="seconds")
+                                # NÃO carimbar atualizado_em aqui: marcar
+                                # "já notifiquei" é metadado local — carimbar
+                                # faz uma cópia VELHA (ainda aberta) vencer a
+                                # conclusão feita em outro lugar no merge e
+                                # RESSUSCITAR tarefa concluída (bug de campo
+                                # 05/11/2026: zumbis no painel).
                                 mudou = True
                         if mudou:
                             save_tasks(self.tarefas)
