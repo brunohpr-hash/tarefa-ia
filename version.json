@@ -1,4 +1,4 @@
 {
-  "version": "1.0.5",
-  "changelog": "Correção de tarefas 'ressuscitando' no painel: o lembrete do Windows não altera mais a data de modificação da tarefa — antes, uma cópia antiga ainda aberta podia vencer a conclusão feita no outro PC/Telegram durante a sincronização e a tarefa concluída voltava a aparecer como pendente."
+  "version": "1.0.6",
+  "changelog": "Compatível com o novo limite da Groq (1.000 tokens de saída/minuto no plano grátis): respostas da IA limitadas a 900 tokens — corrige o erro 429 'Request too large' que deixava o app sem resposta."
 }

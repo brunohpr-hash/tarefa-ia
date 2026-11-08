@@ -32,7 +32,8 @@ import requests
 from PIL import Image, ImageDraw
 
 APP_NAME = "Tarefa IA"
-APP_VERSION = "1.0.5"
+APP_VERSION = "1.0.6"
+MAX_OUT_TOKENS = 900  # Groq free: OTPM 1000/min; acima disso 429 "Request too large"
 UPDATE_REPO = "brunohpr-hash/tarefa-ia"
 UPDATE_RAW = f"https://raw.githubusercontent.com/{UPDATE_REPO}/main"
 APP_DIR = Path(os.environ.get("APPDATA", str(Path.home()))) / "TarefaIA"
@@ -333,6 +334,7 @@ class Pipeline:
             json={
                 "model": p["llm_model"],
                 "temperature": 0.2,
+                "max_tokens": MAX_OUT_TOKENS,
                 "response_format": {"type": "json_object"},
                 "messages": [
                     {"role": "system", "content": PARSE_PROMPT},
