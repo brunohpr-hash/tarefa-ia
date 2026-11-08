@@ -32,10 +32,11 @@ import requests
 from PIL import Image, ImageDraw
 
 APP_NAME = "Tarefa IA"
-APP_VERSION = "1.0.6"
+APP_VERSION = "1.0.7"
 MAX_OUT_TOKENS = 900  # Groq free: OTPM 1000/min; acima disso 429 "Request too large"
 UPDATE_REPO = "brunohpr-hash/tarefa-ia"
 UPDATE_RAW = f"https://raw.githubusercontent.com/{UPDATE_REPO}/main"
+NOCACHE = {"Cache-Control": "no-cache", "Pragma": "no-cache"}  # CDN do GitHub segura version.json ~5 min por região
 APP_DIR = Path(os.environ.get("APPDATA", str(Path.home()))) / "TarefaIA"
 CONFIG_PATH = APP_DIR / "config.json"
 TASKS_PATH = APP_DIR / "tarefas.json"
@@ -373,7 +374,7 @@ UPDATE_FILES = ["main.py", "requirements.txt", "LEIA-ME.md", "iniciar.bat", "ins
 
 def check_remote_version(timeout=10):
     try:
-        r = requests.get(f"{UPDATE_RAW}/version.json", timeout=timeout)
+        r = requests.get(f"{UPDATE_RAW}/version.json?nc={int(time.time())}", headers=NOCACHE, timeout=timeout)
         r.raise_for_status()
         d = r.json()
         return d.get("version"), d.get("changelog", "")
@@ -393,7 +394,7 @@ def download_update(app_dir):
     updated = []
     for fname in UPDATE_FILES:
         try:
-            r = requests.get(f"{UPDATE_RAW}/{fname}", timeout=30)
+            r = requests.get(f"{UPDATE_RAW}/{fname}?nc={int(time.time())}", headers=NOCACHE, timeout=30)
             if r.status_code != 200:
                 continue
             dest = app_dir / fname
