@@ -1,4 +1,4 @@
 {
-  "version": "1.0.7",
-  "changelog": "Atualizador à prova de cache: a verificação consulta o último commit direto na API do GitHub e baixa pela URL imutável dessa versão — acaba o 'já está atualizado' quando há versão nova."
+  "version": "1.0.8",
+  "changelog": "Fim do falso alarme 'Escuta do teclado travou': o teste não roda quando a janela da frente é de administrador ou protegida, tecla real recente prova que a escuta está viva, e o app não reinicia em sequência."
 }
